@@ -9,7 +9,8 @@ on:
       - main
 
 jobs:
-  test:
+  test-backend:
+    name: Backend Test Suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,12 +22,30 @@ jobs:
           
       - name: Install dependencies
         run: |
-          # TODO: Install backend dependencies
-          # cd backend && pip install -r requirements.txt
-          echo "Placeholder for dependency installation"
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
           
-      - name: Run tests
+      - name: Run pytest
         run: |
-          # TODO: Run backend tests
-          # cd backend && pytest
-          echo "Placeholder for tests"
+          python -m pytest backend/tests -v
+
+  build-frontend:
+    name: Frontend Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Next.js application
+        run: |
+          cd frontend
+          npm run build
